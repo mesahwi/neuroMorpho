@@ -5,12 +5,13 @@ Created on Fri Jun  7 20:32:11 2019
 
 @author: allesgut
 """
+import sys
 import requests
 import urllib.request
 
 
-
-for neuronType in range(1, 4):
+startPoint = sys.argv[1]
+for neuronType in range(int(startPoint), 4):
     savePath = "../gdrive/Team Drives/neuroMorpho/pics/"
     cell_type = "glutamatergic"
     if neuronType == 1:
