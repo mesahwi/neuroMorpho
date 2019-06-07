@@ -53,8 +53,8 @@ for neuronType in range(1, 4):
     
         for j in range(0,pageSize):
             neuronId = dataDict[j]['neuron_id']
-            pngUrl = dataDict[i]['png_url']
-            name = dataDict[i]['neuron_name']
+            pngUrl = dataDict[j]['png_url']
+            name = dataDict[j]['neuron_name']
             urllib.request.urlretrieve(pngUrl,savePath+name+'.png')
             
             
