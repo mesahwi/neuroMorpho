@@ -60,5 +60,5 @@ for neuronType in range(1, 4):
             
         print(str(i)+'th page written!')
         
-    print('type' + neuronType +  'done!')
+    print('type' + str(neuronType) +  'done!')
 
