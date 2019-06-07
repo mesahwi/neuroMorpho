@@ -42,7 +42,6 @@ for i in range(1, pageNum):
     pageSize = len(dataDict)
 
     for j in range(0,pageSize):
-        print(str(j)+ ": hmm?")
         neuronId = dataDict[j]['neuron_id']
         msrResponse = requests.get('http://neuromorpho.org/api/morphometry/id/'+ str(neuronId))
         measurement = msrResponse.json()
@@ -50,9 +49,7 @@ for i in range(1, pageNum):
         inputList.append(dataDict[j]['age_classification'])
         inputList.append(dataDict[j]['brain_region'][0])
         inputList.append(dataDict[j]['physical_Integrity'])
-# =============================================================================
-#         wr.writerow(inputList)
-# =============================================================================
+        wr.writerow(inputList)
         
     print(str(i)+'th page written!')
     
