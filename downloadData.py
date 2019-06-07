@@ -1,9 +1,7 @@
 import requests
 import csv
 
-savePath = "../gdrive/My Drive/neuroMorpho/"
-
-type1 = open(savePath+'type1.csv', 'w', encoding='utf-8')
+type1 = open('type1.csv', 'w', encoding='utf-8')
 wr = csv.writer(type1, delimiter=',')
 wr.writerow(['neuron_name','neuron_id','surface','volume','n_bifs','n_branch','width','height',
              'depth','diameter','eucDistance','pathDistance','branch_Order','contraction',
@@ -44,14 +42,17 @@ for i in range(1, pageNum):
     pageSize = len(dataDict)
 
     for j in range(0,pageSize):
+        print(str(j)+ ": hmm?")
         neuronId = dataDict[j]['neuron_id']
         msrResponse = requests.get('http://neuromorpho.org/api/morphometry/id/'+ str(neuronId))
         measurement = msrResponse.json()
         inputList = list(measurement.values())
-        inputList.append(dataDict[i]['age_classification'])
-        inputList.append(dataDict[i]['brain_region'][0])
-        inputList.append(dataDict[i]['physical_Integrity'])
-        wr.writerow(inputList)
+        inputList.append(dataDict[j]['age_classification'])
+        inputList.append(dataDict[j]['brain_region'][0])
+        inputList.append(dataDict[j]['physical_Integrity'])
+# =============================================================================
+#         wr.writerow(inputList)
+# =============================================================================
         
     print(str(i)+'th page written!')
     
@@ -63,7 +64,7 @@ print('type1 done!')
 #============================#
 #Same goes for types 2 and 3
 print('type 2 : ')
-type2 = open(savePath+'type2.csv', 'w', encoding='utf-8')
+type2 = open('type2.csv', 'w', encoding='utf-8')
 wr2 = csv.writer(type2, delimiter=',')
 wr2.writerow(['neuron_name','neuron_id','surface','volume','n_bifs','n_branch','width','height',
              'depth','diameter','eucDistance','pathDistance','branch_Order','contraction',
@@ -108,9 +109,9 @@ for i in range(1, pageNum):
         msrResponse = requests.get('http://neuromorpho.org/api/morphometry/id/'+ str(neuronId))
         measurement = msrResponse.json()
         inputList = list(measurement.values())
-        inputList.append(dataDict[i]['age_classification'])
-        inputList.append(dataDict[i]['brain_region'][0])
-        inputList.append(dataDict[i]['physical_Integrity'])
+        inputList.append(dataDict[j]['age_classification'])
+        inputList.append(dataDict[j]['brain_region'][0])
+        inputList.append(dataDict[j]['physical_Integrity'])
         wr2.writerow(inputList)
 
         
@@ -124,7 +125,7 @@ print('type2 done!')
 ####
 
 print('type 3 : ')
-type3 = open(savePath+'type3.csv', 'w', encoding='utf-8')
+type3 = open('type3.csv', 'w', encoding='utf-8')
 wr3 = csv.writer(type3, delimiter=',')
 wr3.writerow(['neuron_name','neuron_id','surface','volume','n_bifs','n_branch','width','height',
              'depth','diameter','eucDistance','pathDistance','branch_Order','contraction',
@@ -169,9 +170,9 @@ for i in range(1, pageNum):
         msrResponse = requests.get('http://neuromorpho.org/api/morphometry/id/'+ str(neuronId))
         measurement = msrResponse.json()
         inputList = list(measurement.values())
-        inputList.append(dataDict[i]['age_classification'])
-        inputList.append(dataDict[i]['brain_region'][0])
-        inputList.append(dataDict[i]['physical_Integrity'])
+        inputList.append(dataDict[j]['age_classification'])
+        inputList.append(dataDict[j]['brain_region'][0])
+        inputList.append(dataDict[j]['physical_Integrity'])
         wr3.writerow(inputList)
         
     print(str(i)+'th page written!')
