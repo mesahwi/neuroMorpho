@@ -1,7 +1,7 @@
 import requests
 import csv
 
-type1 = open('type1.csv', 'w', encoding='utf-8')
+type1 = open('../gdrive/My Drive/neuroMorpho/type1.csv', 'w', encoding='utf-8')
 wr = csv.writer(type1, delimiter=',')
 wr.writerow(['neuron_name','neuron_id','surface','volume','n_bifs','n_branch','width','height',
              'depth','diameter','eucDistance','pathDistance','branch_Order','contraction',
