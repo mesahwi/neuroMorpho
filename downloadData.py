@@ -1,181 +1,124 @@
 import requests
 import csv
 
-type1 = open('type1.csv', 'w', encoding='utf-8')
-wr = csv.writer(type1, delimiter=',')
-wr.writerow(['neuron_name','neuron_id','surface','volume','n_bifs','n_branch','width','height',
-             'depth','diameter','eucDistance','pathDistance','branch_Order','contraction',
-             'fragmentation','partition_asymmetry','pk_classic','bif_ampl_local','fractal_Dim',
-             'soma_Surface','n_stems', 'bif_ampl_remote','length',
-             'age_classification', 'brain_region', 'physical_Integrity'])
 
+testIdx = []
+f = open('../gdrive/Team Drives/neuroMorpho/testIdx.csv','r')
+rdr = csv.reader(f)
+for line in rdr:
+    try:
+        testIdx.append(int(line[1]))
+    except:
+        print('header: '+line[1])
+f.close()
+
+totalNum = 3000
 #first, see number of pages
-headers = {
-    'Content-Type': 'application/json',
-}
-data = '{"species": ["drosophila melanogaster"], "cell_type": ["glutamatergic"], "archive": ["Chiang"]}'
-response = requests.post('http://neuromorpho.org/api/neuron/select', headers=headers, data=data)
-res = response.json()
-dataDict = res['_embedded']['neuronResources']
-pageNum = res['page']['totalPages']
-pageSize = len(dataDict)
-
-
-#take care of page0
-for i in range(0,pageSize):
-    neuronId = dataDict[i]['neuron_id']
-    msrResponse = requests.get('http://neuromorpho.org/api/morphometry/id/'+ str(neuronId))
-    measurement = msrResponse.json()
-    inputList = list(measurement.values())
-    inputList.append(dataDict[i]['age_classification'])
-    inputList.append(dataDict[i]['brain_region'][0])
-    inputList.append(dataDict[i]['physical_Integrity'])
-    wr.writerow(inputList)
+for neuronType in range(1, 4):
+    cell_type = "glutamatergic"
+    if neuronType == 1:
+        cell_type = "glutamatergic"
+        #savePath = savePath+'type1/'
+    elif neuronType == 2:
+        cell_type = "GABAergic"
+        #savePath = savePath+'type2/'
+    elif neuronType== 3:
+        cell_type = "cholinergic"
+        #savePath = savePath+'type3/'
         
-print(str(0)+'th page written!')
-
-#retrieve data from pages 1:pageNum
-for i in range(1, pageNum):
-    response = requests.post('http://neuromorpho.org/api/neuron/select?page='+str(i), headers=headers, data=data)
-    resJson = response.json()
-    dataDict = resJson['_embedded']['neuronResources']
+        
+    headers = {
+        'Content-Type': 'application/json',
+    }
+    data = '{"species": ["drosophila melanogaster"], "cell_type": ["'+cell_type+'"], "archive": ["Chiang"]}'
+    response = requests.post('http://neuromorpho.org/api/neuron/select', headers=headers, data=data)
+    res = response.json()
+    dataDict = res['_embedded']['neuronResources']
+    pageNum = res['page']['totalPages']
     pageSize = len(dataDict)
+    
+    savePathTrain = "../gdrive/Team Drives/neuroMorpho/measurements/train/"
+    savePathTest = "../gdrive/Team Drives/neuroMorpho/measurements/test/"
 
-    for j in range(0,pageSize):
-        neuronId = dataDict[j]['neuron_id']
+    
+    fileTrain = open(savePathTrain+'type'+str(neuronType)+'.csv', 'w', encoding='utf-8')
+    fileTest = open(savePathTest+'type'+str(neuronType)+'.csv', 'w', encoding='utf-8')
+    wrTrain = csv.writer(fileTrain, delimiter=',')
+    wrTest = csv.writer(fileTest, delimiter=',')
+    wrTrain.writerow(['neuron_name','neuron_id','surface','volume','n_bifs','n_branch','width','height',
+                 'depth','diameter','eucDistance','pathDistance','branch_Order','contraction',
+                 'fragmentation','partition_asymmetry','pk_classic','bif_ampl_local','fractal_Dim',
+                 'soma_Surface','n_stems', 'bif_ampl_remote','length',
+                 'age_classification', 'brain_region', 'physical_Integrity'])
+    wrTest.writerow(['neuron_name','neuron_id','surface','volume','n_bifs','n_branch','width','height',
+                 'depth','diameter','eucDistance','pathDistance','branch_Order','contraction',
+                 'fragmentation','partition_asymmetry','pk_classic','bif_ampl_local','fractal_Dim',
+                 'soma_Surface','n_stems', 'bif_ampl_remote','length',
+                 'age_classification', 'brain_region', 'physical_Integrity'])
+    
+    
+    idx = 0
+    isDone= False
+    #take care of page0
+    for i in range(0,pageSize):
+        if idx >= totalNum:
+            isDone = True
+            idx = 0
+            break
+
+        neuronId = dataDict[i]['neuron_id']
         msrResponse = requests.get('http://neuromorpho.org/api/morphometry/id/'+ str(neuronId))
         measurement = msrResponse.json()
         inputList = list(measurement.values())
-        inputList.append(dataDict[j]['age_classification'])
-        inputList.append(dataDict[j]['brain_region'][0])
-        inputList.append(dataDict[j]['physical_Integrity'])
-        wr.writerow(inputList)
+        inputList.append(dataDict[i]['age_classification'])
+        inputList.append(dataDict[i]['brain_region'][0])
+        inputList.append(dataDict[i]['physical_Integrity'])
         
-    print(str(i)+'th page written!')
-    
-    
-type1.close()
-print('type1 done!')
-
-
-#============================#
-#Same goes for types 2 and 3
-print('type 2 : ')
-type2 = open('type2.csv', 'w', encoding='utf-8')
-wr2 = csv.writer(type2, delimiter=',')
-wr2.writerow(['neuron_name','neuron_id','surface','volume','n_bifs','n_branch','width','height',
-             'depth','diameter','eucDistance','pathDistance','branch_Order','contraction',
-             'fragmentation','partition_asymmetry','pk_classic','bif_ampl_local','fractal_Dim',
-             'soma_Surface','n_stems', 'bif_ampl_remote','length',
-             'age_classification', 'brain_region', 'physical_Integrity'])
-
-#first, see number of pages
-headers = {
-    'Content-Type': 'application/json',
-}
-data = '{"species": ["drosophila melanogaster"], "cell_type": ["GABAergic"], "archive": ["Chiang"]}'
-response = requests.post('http://neuromorpho.org/api/neuron/select', headers=headers, data=data)
-res = response.json()
-dataDict = res['_embedded']['neuronResources']
-pageNum = res['page']['totalPages']
-pageSize = len(dataDict)
-
-
-#take care of page0
-for i in range(0,pageSize):
-    neuronId = dataDict[i]['neuron_id']
-    msrResponse = requests.get('http://neuromorpho.org/api/morphometry/id/'+ str(neuronId))
-    measurement = msrResponse.json()
-    inputList = list(measurement.values())
-    inputList.append(dataDict[i]['age_classification'])
-    inputList.append(dataDict[i]['brain_region'][0])
-    inputList.append(dataDict[i]['physical_Integrity'])
-    wr2.writerow(inputList)
+        if idx in testIdx:
+            wrTest.writerow(inputList)
+        else:
+            wrTrain.writerow(inputList)
         
-print(str(0)+'th page written!')
-
-#retrieve data from pages 1:pageNum
-for i in range(1, pageNum):
-    response = requests.post('http://neuromorpho.org/api/neuron/select?page='+str(i), headers=headers, data=data)
-    resJson = response.json()
-    dataDict = resJson['_embedded']['neuronResources']
-    pageSize = len(dataDict)
-
-    for j in range(0,pageSize):
-        neuronId = dataDict[j]['neuron_id']
-        msrResponse = requests.get('http://neuromorpho.org/api/morphometry/id/'+ str(neuronId))
-        measurement = msrResponse.json()
-        inputList = list(measurement.values())
-        inputList.append(dataDict[j]['age_classification'])
-        inputList.append(dataDict[j]['brain_region'][0])
-        inputList.append(dataDict[j]['physical_Integrity'])
-        wr2.writerow(inputList)
-
+        idx = idx+1
+            
+    print(str(0)+'th page written!')
+    
+    #retrieve data from pages 1:pageNum
+    for i in range(1, pageNum):
+        if isDone:
+            break
         
-    print(str(i)+'th page written!')
+        response = requests.post('http://neuromorpho.org/api/neuron/select?page='+str(i), headers=headers, data=data)
+        resJson = response.json()
+        dataDict = resJson['_embedded']['neuronResources']
+        pageSize = len(dataDict)
     
-    
-type2.close()
-print('type2 done!')
-
-
-####
-
-print('type 3 : ')
-type3 = open('type3.csv', 'w', encoding='utf-8')
-wr3 = csv.writer(type3, delimiter=',')
-wr3.writerow(['neuron_name','neuron_id','surface','volume','n_bifs','n_branch','width','height',
-             'depth','diameter','eucDistance','pathDistance','branch_Order','contraction',
-             'fragmentation','partition_asymmetry','pk_classic','bif_ampl_local','fractal_Dim',
-             'soma_Surface','n_stems', 'bif_ampl_remote','length',
-             'age_classification', 'brain_region', 'physical_Integrity'])
-
-#first, see number of pages
-headers = {
-    'Content-Type': 'application/json',
-}
-data = '{"species": ["drosophila melanogaster"], "cell_type": ["cholinergic"], "archive": ["Chiang"]}'
-response = requests.post('http://neuromorpho.org/api/neuron/select', headers=headers, data=data)
-res = response.json()
-dataDict = res['_embedded']['neuronResources']
-pageNum = res['page']['totalPages']
-pageSize = len(dataDict)
-
-
-#take care of page0
-for i in range(0,pageSize):
-    neuronId = dataDict[i]['neuron_id']
-    msrResponse = requests.get('http://neuromorpho.org/api/morphometry/id/'+ str(neuronId))
-    measurement = msrResponse.json()
-    inputList = list(measurement.values())
-    inputList.append(dataDict[i]['age_classification'])
-    inputList.append(dataDict[i]['brain_region'][0])
-    inputList.append(dataDict[i]['physical_Integrity'])
-    wr3.writerow(inputList)
+        for j in range(0,pageSize):
+            if idx >= totalNum:
+                isDone = True
+                idx = 0
+                break
+            
+            neuronId = dataDict[j]['neuron_id']
+            msrResponse = requests.get('http://neuromorpho.org/api/morphometry/id/'+ str(neuronId))
+            measurement = msrResponse.json()
+            inputList = list(measurement.values())
+            inputList.append(dataDict[j]['age_classification'])
+            inputList.append(dataDict[j]['brain_region'][0])
+            inputList.append(dataDict[j]['physical_Integrity'])
+            
+            if idx in testIdx:
+                wrTest.writerow(inputList)
+            else:
+                wrTrain.writerow(inputList)
+                
+            idx= idx+1
+            
+        print(str(i)+'th page written!')
         
-print(str(0)+'th page written!')
-
-#retrieve data from pages 1:pageNum
-for i in range(1, pageNum):
-    response = requests.post('http://neuromorpho.org/api/neuron/select?page='+str(i), headers=headers, data=data)
-    resJson = response.json()
-    dataDict = resJson['_embedded']['neuronResources']
-    pageSize = len(dataDict)
-
-    for j in range(0,pageSize):
-        neuronId = dataDict[j]['neuron_id']
-        msrResponse = requests.get('http://neuromorpho.org/api/morphometry/id/'+ str(neuronId))
-        measurement = msrResponse.json()
-        inputList = list(measurement.values())
-        inputList.append(dataDict[j]['age_classification'])
-        inputList.append(dataDict[j]['brain_region'][0])
-        inputList.append(dataDict[j]['physical_Integrity'])
-        wr3.writerow(inputList)
         
-    print(str(i)+'th page written!')
-    
-    
-type3.close()
-print('type3 done!')
+    fileTrain.close()
+    fileTest.close()
+    print('type'+str(i)+ 'done!')
 
 
