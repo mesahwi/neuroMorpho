@@ -70,7 +70,7 @@ for neuronType in range(int(startPoint), 4):
     isDone = False
     #take care of page0
     for i in range(0,pageSize):
-        if idx >= 15:
+        if idx >= 3000:
             isDone = True
             idx = 0
             break
@@ -97,7 +97,7 @@ for neuronType in range(int(startPoint), 4):
         pageSize = len(dataDict)
     
         for j in range(0,pageSize):
-            if idx >= 15:
+            if idx >= 3000:
                 isDone = True
                 idx = 0
                 break
