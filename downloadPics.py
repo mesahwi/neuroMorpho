@@ -11,8 +11,8 @@ import urllib.request
 import csv
 
 def getSavePath(neuronType, isTest):
-    savePathTrain = "../gdrive/Team Drives/neuroMorpho/pics/train"
-    savePathTest = "../gdrive/Team Drives/neuroMorpho/pics/test"
+    savePathTrain = "../gdrive/Team Drives/neuroMorpho/pics/train/"
+    savePathTest = "../gdrive/Team Drives/neuroMorpho/pics/test/"
 
     if isTest:
         if neuronType == 1:
