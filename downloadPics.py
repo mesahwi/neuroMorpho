@@ -34,7 +34,7 @@ def getSavePath(neuronType, isTest):
 startPoint = sys.argv[1]
 #startPoint = 1
 testIdx = []
-f = open('/../gdrive/Team Drives/neuroMorpho/testIdx.csv','r')
+f = open('../gdrive/Team Drives/neuroMorpho/testIdx.csv','r')
 rdr = csv.reader(f)
 for line in rdr:
     try:
